@@ -1,12 +1,19 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 
 const PORT = process.env.port || 3000;
 
 const connectDB = require("./config/db");
 connectDB();
 
-app.use("/api/upload", require("./routes/files"));
+//Template engine
+app.set("views", path.join(__dirname, "/views"));
+app.set("view engine", "ejs");
+
+//Routes
+app.use("/api/files", require("./routes/files"));
+app.use("/files", require("./routes/show"));
 
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}`);
