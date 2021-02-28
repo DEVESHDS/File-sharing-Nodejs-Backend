@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Download and Share file easily</title>
+    <link rel="stylesheet" href="/css/stryle.css" />
+  </head>
+
+  <body>
+    <img src="/img/logo.png" alt="logo" class="logo" />
+    <section class="upload-container">
+      <img
+        src="/img/download_sd.svg"
+        class="download__icon"
+        alt="filesharing download"
+      />
+      <% if (locals.error) { %>
+      <h4><%- locals.error%></h4>
+      <% } else {%>
+      <h2>Your file is ready to download</h2>
+      <p>link expires in 24 hours</p>
+      <div class="download__meta">
+        <h4><%- filename %></h4>
+        <small><%- parseInt(filesize/1000)%>KB</small>
+      </div>
+      <div class="send-btn-container">
+        <a href="<%- download %>">Download File</a>
+      </div>
+      <% } %>
+    </section>
+  </body>
+</html>
