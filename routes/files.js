@@ -48,10 +48,24 @@ router.post("/", (req, res) => {
   });
 });
 
-res.post("/send", async (req, res) => {
+router.post("/send", async (req, res) => {
   const { uuid, emailTo, emailFrom } = req.body;
   if (!uuid || !emailTo || !emailFrom) {
     return res.status(422).send({ error: "All fields are required" });
+  }
+  try {
+    const file = await File.findOne({ uuid: uuid });
+    if (file.sender) {
+      return res.status(422).send({ error: "Email is already sent" });
+    }
+    // file.sender = emailFrom;
+    // file.receiver = emailTo;
+    const response = await File.findOneAndUpdate(
+      { uuid: uuid },
+      { sender: emailFrom, receiver: emailTo }
+    );
+  } catch (err) {
+    res.send({ error: "Some error occured at database" });
   }
   const file = File.findOne({ uuid: uuid });
   if (file.sender) {
@@ -59,7 +73,11 @@ res.post("/send", async (req, res) => {
   }
   file.sender = emailFrom;
   file.receiver = emailTo;
-  const response = await file.save();
+  const response = await File.findOneAndUpdate(
+    { uuid: uuid },
+    { sender: emailFrom, receiver: emailTo }
+  );
+  // const response = await File.file.save();
   //send email
   const sendmail = require("../services/emailService");
   sendmail({
@@ -74,6 +92,7 @@ res.post("/send", async (req, res) => {
       expires: "24 hours",
     }),
   });
+  res.send({ success: "MAil sent successfully" });
 });
 
 module.exports = router;
